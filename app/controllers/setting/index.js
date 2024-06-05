@@ -1,0 +1,1 @@
+const Admin = require("../../modals/authenticator/admin");

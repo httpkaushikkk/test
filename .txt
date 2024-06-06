@@ -1,1 +1,2 @@
 DB=mongodb://127.0.0.1:27017/ez_gamify
+DB=mongodb+srv://mcoder004:DTWgIZxdWb8okbsU@ez-gamify.twaks3a.mongodb.net

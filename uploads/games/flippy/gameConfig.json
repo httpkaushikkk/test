@@ -1,0 +1,82 @@
+[
+      {
+        "asset_id" : "flappyBird",
+        "asset_path":"./assets/mario.png",
+        "asset_name": "Bird",
+        "asset_type": "Image/Gif",
+        "asset_desc": "This is the bird that will jump arround",
+        "asset_text": "",
+        "asset_number": 0,
+        "asset_number_range": [
+            {"upper_range": 0},
+            {"lower_range": 0}
+        ]
+      },
+      {
+        "asset_id" : "background",
+        "asset_path":"./assets/flappybirdbg.gif",
+        "asset_name": "Background",
+        "asset_type": "Image/Gif",
+        "asset_desc": "This is the Background asset of this game",
+        "asset_text": "",
+        "asset_number": 0,
+        "asset_number_range": [
+            {"upper_range": 0},
+            {"lower_range": 0}
+        ]
+      },
+      {
+        "asset_id" : "topPipe",
+        "asset_path":"./assets/toppipe-01.png",
+        "asset_name": "Top Pipe",
+        "asset_type": "Image/Gif",
+        "asset_desc": "This is the top pipe that bird will try to stay away from",
+        "asset_text": "",
+        "asset_number": 0,
+        "asset_number_range": [
+            {"upper_range": 0},
+            {"lower_range": 0}
+        ]
+      },
+      {
+        "asset_id" : "bottomPipe",
+        "asset_path":"./assets/bottompipe-01.png",
+        "asset_name": "Bottom Pipe",
+        "asset_type": "Image/Gif",
+        "asset_desc": "This is the bottom pipe that bird will try to stay away from",
+        "asset_text": "",
+        "asset_number": 0,
+        "asset_number_range": [
+            {"upper_range": 0},
+            {"lower_range": 0}
+        ]
+      },
+      {
+        "asset_id" : "scoreText",
+        "asset_path":"",
+        "asset_name": "Score Text",
+        "asset_type": "Text",
+        "asset_desc": "This is the text for the score",
+        "asset_text": "The Score is <text>",
+        "asset_number": 0,
+        "asset_number_range": [
+            {"upper_range": 0},
+            {"lower_range": 0}
+        ]
+      },
+      {
+        "asset_id" : "difficultyLevel",
+        "asset_path":"",
+        "asset_name": "Difficulty Level",
+        "asset_type": "Numerics",
+        "asset_desc": "This is number to describe the difficulty of the game",
+        "asset_text": "",
+        "asset_number": 50,
+        "asset_number_range": [
+            {"upper_range": 100},
+            {"lower_range": 1}
+        ]
+      }
+    ]
+    
+  

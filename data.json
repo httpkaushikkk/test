@@ -1,0 +1,15 @@
+{
+    "name":"Super Mario",
+    "title":"Super Mario Summer Special",
+    "description":"old is gold super mario with 2d game foe very enjoyebal",
+    "game_url":"http://res.cloudinary.com/dto7ey6g5/raw/upload/v1717579604/games/mario/index.html",
+    "game_icon":"http://res.cloudinary.com/dto7ey6g5/image/upload/v1717582045/games_icon/file-1717582042704.png",
+    "poster": [
+        {
+            "path": "http://res.cloudinary.com/dto7ey6g5/image/upload/v1717581599/games_images/files-1717581596467.jpg"
+        },
+        {
+            "path": "http://res.cloudinary.com/dto7ey6g5/image/upload/v1717581600/games_images/files-1717581596471.jpg"
+        }
+    ]
+}

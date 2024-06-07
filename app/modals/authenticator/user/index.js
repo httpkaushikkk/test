@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema(
     country: { type: String },
     is_active: { type: Boolean, default: true },
     permissions: [{ type: mongoose.Schema.Types.ObjectId, ref: "permissions" }],
+    games: [{ type: mongoose.Schema.Types.ObjectId, ref: "Games" }],
   },
   {
     timestamps: true,

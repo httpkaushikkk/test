@@ -3,6 +3,7 @@ const checkStatus = require("../../../middleware/check_status");
 const generateToken = require("../../../utils/generate_token");
 const { userSchema, userLoginSchema } = require("./validate");
 const User = require("../../../modals/authenticator/user");
+const Game = require("../../../modals/game");
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcrypt");
 
@@ -117,9 +118,11 @@ exports.fetchUser = asyncHandler(async (req, res, next) => {
   const user = await User.findOne({ _id });
 
   // check user active status
-  checkStatus(res, user.is_active);
+  // checkStatus(res, user.is_active);
 
   await User.findOne({ _id })
+    .populate("games")
+    .exec()
     .then((response) => {
       res.status(200).json({ status: 1, response });
     })
@@ -130,10 +133,16 @@ exports.fetchUser = asyncHandler(async (req, res, next) => {
 
 // ^ edit user
 exports.editUser = asyncHandler(async (req, res, next) => {
-  const { _id, username, name, mobile, profile_img, is_active } = req.body;
+  const { _id, username, name, mobile, profile_img, is_active, game_id } =
+    req.body;
 
   const user = await User.findOne({ _id });
   if (!user) return res.json({ status: 1, message: "User not find!" });
+
+  if (game_id) {
+    const checkGame = await Game.findOne({ _id: game_id });
+    if (!checkGame) return res.json({ status: 1, message: "Game not find!" });
+  }
 
   // check user active status
   // checkStatus(res, user.is_active);
@@ -149,11 +158,12 @@ exports.editUser = asyncHandler(async (req, res, next) => {
         mobile,
         profile_img,
         is_active,
+        games: game_id,
       },
     }
   )
     .then((response) => {
-      res.status(200).json({ status: 1, message: "update success." });
+      res.status(200).json({ status: 1, message: "success." });
     })
     .catch((err) => {
       res.status(400).json({ status: 0, message: "data not update!" });

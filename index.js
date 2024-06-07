@@ -1,10 +1,17 @@
+const cache = require("memory-cache");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const app = require("./app");
+const track_apicall = require("./app/middleware/track_apicall");
 
 dotenv.config({
   path: "./config.env",
 });
+
+// Middleware to track API call count
+// app.use((req, res, next) => {
+//   track_apicall(req, res, next);
+// });
 
 mongoose.set("strictQuery", false);
 mongoose

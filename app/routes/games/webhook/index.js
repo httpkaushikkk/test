@@ -7,6 +7,6 @@ const protect = require("../../../middleware/protect");
 router.route("/generate-link").post(protect, generateLink);
 
 // ^ webhook
-router.route("/uploads/games/:folder/:file/:id").post(webhook);
+router.route("/uploads/games/:folder/:file/:id/:user_id").get(webhook);
 
 module.exports = router;

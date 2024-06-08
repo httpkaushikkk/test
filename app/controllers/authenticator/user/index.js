@@ -122,6 +122,7 @@ exports.fetchUser = asyncHandler(async (req, res, next) => {
 
   await User.findOne({ _id })
     .populate("games")
+    .populate("active_games")
     .exec()
     .then((response) => {
       res.status(200).json({ status: 1, response });
@@ -158,7 +159,7 @@ exports.editUser = asyncHandler(async (req, res, next) => {
         mobile,
         profile_img,
         is_active,
-        games: game_id,
+        games: [...user.games, game_id],
       },
     }
   )
@@ -166,6 +167,7 @@ exports.editUser = asyncHandler(async (req, res, next) => {
       res.status(200).json({ status: 1, message: "success." });
     })
     .catch((err) => {
+      console.log(err);
       res.status(400).json({ status: 0, message: "data not update!" });
     });
 });

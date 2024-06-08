@@ -24,6 +24,8 @@ const moduleRoute = require("./app/routes/module");
 const webhook = require("./app/routes/games/webhook");
 const selectGame = require("./app/routes/games/select_game");
 const userRoute = require("./app/routes/authenticator/user");
+const activeGame = require("./app/routes/games/active_game");
+const gameReport = require("./app/routes/report/game_report");
 const adminRoute = require("./app/routes/authenticator/admin");
 const currencyRoute = require("./app/routes/account/currency");
 
@@ -35,8 +37,9 @@ app.use(`${defultRoutes}currency`, currencyRoute);
 app.use(`${defultRoutes}common`, common);
 app.use(`${defultRoutes}game`, game);
 app.use(`${defultRoutes}game`, selectGame);
+app.use(`${defultRoutes}game`, activeGame);
 app.use(`${defultRoutes}`, webhook);
-
+app.use(`${defultRoutes}report/game`, gameReport);
 
 app.all("*", (req, res, next) => {
   next(new AppError(`can't find ${req.originalUrl} on this server`, 404));

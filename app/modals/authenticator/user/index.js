@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema(
     is_active: { type: Boolean, default: true },
     permissions: [{ type: mongoose.Schema.Types.ObjectId, ref: "permissions" }],
     games: [{ type: mongoose.Schema.Types.ObjectId, ref: "Games" }],
+    active_games: [{ type: mongoose.Schema.Types.ObjectId, ref: "Games" }],
   },
   {
     timestamps: true,

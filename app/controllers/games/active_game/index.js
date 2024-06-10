@@ -4,9 +4,9 @@ const asyncHandler = require("express-async-handler");
 // ^ fetch active games
 exports.fetchActiveGames = asyncHandler(async (req, res, next) => {
   const { _id, game_id } = req.body;
-//   const checkUser = await ActiveGame.findOne({ user: { $in: [_id] }, game: { $in: [game_id] } });
-//   if (!checkUser)
-//     return res.status(400).json({ status: 0, message: "User not found!" });
+  //   const checkUser = await ActiveGame.findOne({ user: { $in: [_id] }, game: { $in: [game_id] } });
+  //   if (!checkUser)
+  //     return res.status(400).json({ status: 0, message: "User not found!" });
 
   await ActiveGame.findOne({ user: { $in: [_id] }, game: { $in: [game_id] } })
     .populate("user")
@@ -28,5 +28,26 @@ exports.fetchAllActiveGames = asyncHandler(async (req, res, next) => {
     })
     .catch((err) => {
       res.status(400).json({ status: 0, message: err.message });
+    });
+});
+
+// ^ edit active games
+exports.editActiveGames = asyncHandler(async (req, res, next) => {
+  const { _id, user_id, game_id, is_active } = req.body;
+  const checkUser = await ActiveGame.findOne({ user: { $in: [user_id] } });
+  if (!checkUser)
+    return res.status(400).json({ status: 0, message: "User not found!" });
+  const checkGame = await ActiveGame.findOne({ game: { $in: [game_id] } });
+  if (!checkGame)
+    return res.status(400).json({ status: 0, message: "Game not found!" });
+
+  await ActiveGame.findByIdAndUpdate({ _id }, { $set: { is_active } })
+    .then((response) => {
+      res.status(200).json({
+        message: "Game is disabled",
+      });
+    })
+    .catch((err) => {
+      res.status(400).json({ status: 0, message: "Game isn't disabled" });
     });
 });

@@ -43,11 +43,17 @@ exports.editActiveGames = asyncHandler(async (req, res, next) => {
 
   await ActiveGame.findByIdAndUpdate({ _id }, { $set: { is_active } })
     .then((response) => {
-      res.status(200).json({
-        message: "Game is disabled",
-      });
+      if (response.is_active == false) {
+        res.status(200).json({
+          message: "URL is enable",
+        });
+      } else {
+        res.status(200).json({
+          message: "URL is disabled",
+        });
+      }
     })
     .catch((err) => {
-      res.status(400).json({ status: 0, message: "Game isn't disabled" });
+      res.status(400).json({ status: 0, message: err.message });
     });
 });

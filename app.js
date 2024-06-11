@@ -1,3 +1,4 @@
+const validateUrlMiddleware = require("./app/middleware/validateUrlMiddleware");
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
@@ -15,6 +16,8 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+// app.use(validateUrlMiddleware);
 
 const defultRoutes = "/v1/api/";
 // routes
@@ -37,7 +40,7 @@ app.use(`${defultRoutes}currency`, currencyRoute);
 app.use(`${defultRoutes}common`, common);
 app.use(`${defultRoutes}game`, game);
 app.use(`${defultRoutes}game`, selectGame);
-app.use(`${defultRoutes}game`, activeGame);
+app.use(`${defultRoutes}game/active`, activeGame);
 app.use(`${defultRoutes}`, webhook);
 app.use(`${defultRoutes}report/game`, gameReport);
 

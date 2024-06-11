@@ -3,6 +3,8 @@ const ActiveGame = require("../../../modals/game/active_games");
 const User = require("../../../modals/authenticator/user");
 const asyncHandler = require("express-async-handler");
 const Game = require("../../../modals/game/index");
+const crypto = require("crypto-js");
+const path = require("path");
 
 let apiCallCount = 0;
 
@@ -37,6 +39,13 @@ exports.generateLink = asyncHandler(async (req, res, next) => {
 exports.webhook = asyncHandler(async (req, res, next) => {
   apiCallCount++;
   const { folder, file, id, user_id } = req.params;
+  const fullUrl = `${req.protocol}://${req.get("host")}${req.originalUrl}`;
+
+  // check url disable or not?
+  const checkURL = await ActiveGame.findOne({ game_url: fullUrl });
+  if (!checkURL.is_active) {
+    return res.status(400).json({ status: 0, message: "Game is disable!" });
+  }
 
   const checkGame = await Game.findOne({ _id: id });
   if (!checkGame)
@@ -77,6 +86,7 @@ exports.webhook = asyncHandler(async (req, res, next) => {
     await checkReportHave.save();
   }
 
-  let path = gameUrl.replace(/\\/g, "/");
-  res.redirect(`http://localhost:8100/${path}`);
+  let paths = gameUrl.replace(/\\/g, "/");
+  // const hash = crypto.SHA256(path).toString();
+  res.redirect(`http://localhost:8100/${paths}`);
 });

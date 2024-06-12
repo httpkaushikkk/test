@@ -1,3 +1,4 @@
+const Razorpay = require("razorpay");
 const Admin = require("../../modals/authenticator/admin");
 const asyncHandler = require("express-async-handler");
 const Files = require("../../modals/game/files");
@@ -84,5 +85,31 @@ exports.uploadGameIcon = asyncHandler(async (req, res, next) => {
     res.status(200).json({ status: 1, data, message: "upload suceess." });
   } catch (err) {
     res.status(500).json({ status: 0, error: err.message });
+  }
+});
+
+// create order for payment on razorpay
+exports.paymentOrder = asyncHandler(async (req, res, next) => {
+  const { amount, currency, order_id } = req.body;
+
+  // initializing razorpay
+  const razorpay = new Razorpay({
+    key_id: "rzp_test_C9DzcxlU9lS3ZS",
+    key_secret: "Sru1UMfoHq24Wl1pmSc2JpB1",
+  });
+
+  // setting up options for razorpay order.
+  const options = {
+    amount: amount * 100,
+    currency: currency,
+    receipt: order_id,
+    payment_capture: 1,
+  };
+
+  try {
+    const response = await razorpay.orders.create(options);
+    res.status(200).json({ status: 1, response });
+  } catch (err) {
+    res.status(400).send("Not able to create order. Please try again!");
   }
 });

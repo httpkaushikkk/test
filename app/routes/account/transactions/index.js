@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const protect = require("../../../middleware/protect");
 const {
   fetch,
   add,
@@ -7,6 +8,7 @@ const {
   edit,
   deleteTransaction,
 } = require("../../../controllers/account/transactions");
+
 
 // ^ add transactions
 router.route("/add").post(protect, add);

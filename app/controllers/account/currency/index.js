@@ -12,13 +12,13 @@ exports.addCurrency = asyncHandler(async (req, res, next) => {
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
   }
-  const { admin_id, name, short_name } = req.body;
+  const { admin_id, name, short_name, symbol } = req.body;
 
-  const admin = await Admin.findOne({ _id: admin_id });
-  checkStatus(res, admin.status);
+  // const admin = await Admin.findOne({ _id: admin_id });
+  // checkStatus(res, admin.status);
 
   try {
-    const currency = await Currency.create({ name, short_name });
+    const currency = await Currency.create({ name, short_name, symbol });
     res.status(200).json({
       status: 1,
       currency,

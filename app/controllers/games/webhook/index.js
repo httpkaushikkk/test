@@ -1,5 +1,7 @@
 const LinkReport = require("../../../modals/report/link_report");
 const ActiveGame = require("../../../modals/game/active_games");
+const Transaction = require("../../../modals/account/transactions");
+const Wallet = require("../../../modals/account/wallet");
 const User = require("../../../modals/authenticator/user");
 const asyncHandler = require("express-async-handler");
 const Game = require("../../../modals/game/index");
@@ -35,6 +37,27 @@ exports.generateLink = asyncHandler(async (req, res, next) => {
     });
 });
 
+const makeCharges = async (req, res, next) => {
+  const { id, user_id } = req.params;
+  const checkWallet = await Wallet.findOne({ user: { $in: [user_id] } });
+  if (!checkWallet)
+    return res.status(400).json({ status: 0, message: "Wallet not found!" });
+  if (checkWallet.balance > 0) {
+    await Transaction.create({
+      wallet: checkWallet._id,
+      user: checkWallet.user[0]._id,
+      currency: checkWallet.currency[0]._id,
+      game: id,
+      razorpay_payment_id: "",
+      razorpay_order_id: "",
+      razorpay_signature: "",
+      amount: 5,
+      is_credit: false,
+      is_debit: true,
+    });
+  }
+};
+
 // ^ webhook
 exports.webhook = asyncHandler(async (req, res, next) => {
   apiCallCount++;
@@ -45,6 +68,15 @@ exports.webhook = asyncHandler(async (req, res, next) => {
   const checkURL = await ActiveGame.findOne({ game_url: fullUrl });
   if (!checkURL.is_active) {
     return res.status(400).json({ status: 0, message: "Game is disable!" });
+  }
+
+  // fetch wallet and charge for open link money
+  const checkWallet = await Wallet.findOne({ user: { $in: [user_id] } });
+  if (!checkWallet)
+    return res.status(400).json({ status: 0, message: "Wallet not found!" });
+  if (checkWallet.balance > 0) {
+    checkWallet.balance = checkWallet.balance - 5;
+    await checkWallet.save();
   }
 
   const checkGame = await Game.findOne({ _id: id });
@@ -85,6 +117,8 @@ exports.webhook = asyncHandler(async (req, res, next) => {
     checkReportHave.open_count += 1;
     await checkReportHave.save();
   }
+
+  makeCharges(req, res, next);
 
   let paths = gameUrl.replace(/\\/g, "/");
   // const hash = crypto.SHA256(path).toString();

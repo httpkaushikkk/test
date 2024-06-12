@@ -4,7 +4,8 @@ const currencySchema = new mongoose.Schema(
   {
     name: { type: String },
     short_name: { type: String },
-    status: { type: Boolean, default: true }
+    status: { type: Boolean, default: true },
+    symbol: { type: String },
   },
   {
     timestamps: true,

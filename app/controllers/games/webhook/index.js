@@ -43,6 +43,9 @@ const makeCharges = async (req, res, next) => {
   if (!checkWallet)
     return res.status(400).json({ status: 0, message: "Wallet not found!" });
   if (checkWallet.balance > 0) {
+    // if (req.session) {
+    //   req.session.paymentCompleted = true;
+    // }
     await Transaction.create({
       wallet: checkWallet._id,
       user: checkWallet.user[0]._id,
@@ -67,7 +70,8 @@ exports.webhook = asyncHandler(async (req, res, next) => {
   // check url disable or not?
   const checkURL = await ActiveGame.findOne({ game_url: fullUrl });
   if (!checkURL.is_active) {
-    return res.status(400).json({ status: 0, message: "Game is disable!" });
+    // return res.status(400).json({ status: 0, message: "Game is disable!" });
+    return res.sendFile(__dirname + "/index.html");
   }
 
   // fetch wallet and charge for open link money

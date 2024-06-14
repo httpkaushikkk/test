@@ -7,8 +7,8 @@ const {
   fetchAll,
   edit,
   deleteTransaction,
+  downloadExcel,
 } = require("../../../controllers/account/transactions");
-
 
 // ^ add transactions
 router.route("/add").post(protect, add);
@@ -18,6 +18,9 @@ router.route("/fetch").post(protect, fetch);
 
 // ^ fetch all transactions
 router.route("/fetch-all").post(protect, fetchAll);
+
+// ^ export excel transactions
+router.route("/excel").post(protect, downloadExcel);
 
 // ^ edit transactions
 router.route("/edit").post(protect, edit);

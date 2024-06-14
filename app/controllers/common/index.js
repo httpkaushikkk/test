@@ -1,5 +1,6 @@
 const Razorpay = require("razorpay");
 const Admin = require("../../modals/authenticator/admin");
+const User = require("../../modals/authenticator/user");
 const asyncHandler = require("express-async-handler");
 const Files = require("../../modals/game/files");
 const cloudinary = require("../../utils/cloudinary");
@@ -76,6 +77,28 @@ exports.uploadGameIcon = asyncHandler(async (req, res, next) => {
     const file = {
       name: req.file.originalname,
       // path: newPath.url,
+      path: req.file.path,
+      size: req.file.size,
+      mimetype: req.file.mimetype,
+      destination: req.file.destination,
+    };
+    let data = await Files.create(file);
+    res.status(200).json({ status: 1, data, message: "upload suceess." });
+  } catch (err) {
+    res.status(500).json({ status: 0, error: err.message });
+  }
+});
+
+// upload user's profile image
+exports.profileUpload = asyncHandler(async (req, res, next) => {
+  const { _id } = req.body;
+  const check = await User.findOne({ _id });
+  if (!check)
+    return res.status(400).json({ status: 0, message: "User not found!" });
+
+  try {
+    const file = {
+      name: req.file.originalname,
       path: req.file.path,
       size: req.file.size,
       mimetype: req.file.mimetype,

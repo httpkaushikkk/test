@@ -101,12 +101,47 @@ exports.fetch = asyncHandler(async (req, res, next) => {
 
 // fetch all transaction
 exports.fetchAll = asyncHandler(async (req, res, next) => {
+  const page = parseInt(req.body.page) || 1;
+  const pageSize = parseInt(req.body.pageSize) || 6;
+
+  const startIndex = (page - 1) * pageSize;
+  const endIndex = page * pageSize;
+
   await Transaction.find()
     .populate("wallet")
     .populate("user")
     .populate("currency")
     .populate("game")
-    .then((response) => {
+    .then((ress) => {
+      let response = ress.sort(function (a, b) {
+        return b.createdAt - a.createdAt;
+      });
+      const paginationItems = response.slice(startIndex, endIndex);
+
+      res.status(200).json({
+        response: paginationItems,
+        currentPage: page,
+        totalPages: Math.ceil(response.length / pageSize),
+        totalData: response.length,
+        message: "fetch success.",
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({ status: 0, error: err.message });
+    });
+});
+
+// download excel file
+exports.downloadExcel = asyncHandler(async (req, res, next) => {
+  await Transaction.find()
+    .populate("wallet")
+    .populate("user")
+    .populate("currency")
+    .populate("game")
+    .then((ress) => {
+      let response = ress.sort(function (a, b) {
+        return b.createdAt - a.createdAt;
+      });
       res.status(200).json({
         response,
         message: "fetch success.",

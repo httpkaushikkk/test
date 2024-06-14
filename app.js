@@ -1,10 +1,10 @@
-const validateUrlMiddleware = require("./app/middleware/validateUrlMiddleware");
-const express = require("express");
-const cookieParser = require("cookie-parser");
-const bodyParser = require("body-parser");
-const AppError = require("./app/utils/app_error");
-const cors = require("cors");
 const path = require("path");
+const cors = require("cors");
+const express = require("express");
+const bodyParser = require("body-parser");
+const session = require("express-session");
+const cookieParser = require("cookie-parser");
+const AppError = require("./app/utils/app_error");
 
 const app = express();
 
@@ -17,7 +17,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// app.use(validateUrlMiddleware);
+app.use(
+  session({
+    secret: "aswfv5efr44v4as4vs8advsvasfa",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 const defultRoutes = "/v1/api/";
 // routes

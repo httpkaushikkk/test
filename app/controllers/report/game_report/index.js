@@ -21,7 +21,7 @@ exports.fetchAllReport = asyncHandler(async (req, res, next) => {
   await LinkReport.find()
     .populate("game")
     .populate("user")
-    .exec()
+    .exec() 
     .then((response) => {
       res.status(200).json({ status: 1, response, message: "success" });
     })

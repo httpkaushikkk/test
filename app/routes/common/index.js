@@ -5,11 +5,15 @@ const {
   uploadGameFile,
   uploadGameIcon,
   paymentOrder,
+  profileUpload,
 } = require("../../controllers/common");
 const multer = require("../../middleware/multer");
 
 // ^ upload file
 router.route("/upload-game").post(multer.array("files"), uploadGameFile);
+
+// ^ upload profile
+router.route("/upload-profile").post(multer.single("file"), profileUpload);
 
 // ^ upload game icons
 router

@@ -9,6 +9,7 @@ const {
   fetchAllUser,
   editUser,
   deleteUser,
+  verifyUser,
 } = require("../../../controllers/authenticator/user");
 
 // ^ check username for available
@@ -16,6 +17,9 @@ router.route("/check-username").post(checkUsername);
 
 // ^ register user routes
 router.route("/register").post(register);
+
+// ^ verify user
+router.route("/:id/verify/:token").get(verifyUser);
 
 // ^ login user routes
 router.route("/login").post(login);

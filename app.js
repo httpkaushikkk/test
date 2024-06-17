@@ -35,10 +35,13 @@ const walletRoute = require("./app/routes/account/wallet");
 const selectGame = require("./app/routes/games/select_game");
 const userRoute = require("./app/routes/authenticator/user");
 const activeGame = require("./app/routes/games/active_game");
-const gameReport = require("./app/routes/report/game_report");
 const adminRoute = require("./app/routes/authenticator/admin");
 const currencyRoute = require("./app/routes/account/currency");
 const transactionRoute = require("./app/routes/account/transactions");
+
+// reports
+const gameReport = require("./app/routes/report/game");
+const transactionReport = require("./app/routes/report/transaction");
 
 // apis endpoints
 app.use(`${defultRoutes}`, webhook);
@@ -50,9 +53,12 @@ app.use(`${defultRoutes}admin`, adminRoute);
 app.use(`${defultRoutes}module`, moduleRoute);
 app.use(`${defultRoutes}wallet`, walletRoute);
 app.use(`${defultRoutes}game/active`, activeGame);
-app.use(`${defultRoutes}report/game`, gameReport);
 app.use(`${defultRoutes}currency`, currencyRoute);
 app.use(`${defultRoutes}transaction`, transactionRoute);
+
+// report
+app.use(`${defultRoutes}report/game`, gameReport);
+app.use(`${defultRoutes}report/transaction`, transactionReport);
 
 app.all("*", (req, res, next) => {
   next(new AppError(`can't find ${req.originalUrl} on this server`, 404));

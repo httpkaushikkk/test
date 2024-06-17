@@ -1,11 +1,14 @@
-const bcryptPassword = require("../../../utils/bcrypt_password");
-const checkStatus = require("../../../middleware/check_status");
-const generateToken = require("../../../utils/generate_token");
-const { userSchema, userLoginSchema } = require("./validate");
-const User = require("../../../modals/authenticator/user");
+const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 const Game = require("../../../modals/game");
 const asyncHandler = require("express-async-handler");
-const bcrypt = require("bcrypt");
+const sendEmail = require("../../../utils/send_email");
+const User = require("../../../modals/authenticator/user");
+const Token = require("../../../modals/authenticator/token");
+const { userSchema, userLoginSchema } = require("./validate");
+const generateToken = require("../../../utils/generate_token");
+const checkStatus = require("../../../middleware/check_status");
+const bcryptPassword = require("../../../utils/bcrypt_password");
 
 // ^ check username
 exports.checkUsername = asyncHandler(async (req, res, next) => {
@@ -20,12 +23,6 @@ exports.checkUsername = asyncHandler(async (req, res, next) => {
 
 // ^ register user
 exports.register = asyncHandler(async (req, res, next) => {
-  // joi validation
-  // const { error } = userSchema.validate(req.body);
-  // if (error) {
-  //   return res.status(400).json({ status: 0, error: error.details[0].message });
-  // }
-
   const { username, name, email, mobile, country, password, is_create_admin } =
     req.body;
 
@@ -51,22 +48,41 @@ exports.register = asyncHandler(async (req, res, next) => {
         message: "User Create Success!",
       });
     } else {
-      // generate token
-      const token = generateToken(
-        {
-          id: user._id,
-        },
-        process.env.JWT_LOGIN_TOKEN,
-        process.env.JWT_LOGIN_TOKEN_TIME
-      );
-      res.status(200).json({
-        status: 1,
-        data: { token, user },
-        message: "User Create Success!",
-      });
+      const token = await new Token({
+        user_id: user._id,
+        token: crypto.randomBytes(32).toString("hex"),
+      }).save();
+
+      const url = `${process.env.BASE_URL}users/${user._id}/verify/${token.token}`;
+      await sendEmail(user.email, "Verify Email", url);
+
+      res
+        .status(201)
+        .send({ message: "An email sent to your account please verify" });
     }
   } catch (err) {
     res.status(500).json({ status: 0, message: err.message });
+  }
+});
+
+// ^ verify user
+exports.verifyUser = asyncHandler(async (req, res, next) => {
+  try {
+    const user = await User.findOne({ _id: req.params.id });
+    if (!user) return res.status(400).json({ message: "Invalid link" });
+
+    const token = await Token.findOne({
+      user_id: user._id,
+      token: req.params.token,
+    });
+    if (!token) return res.status(400).json({ message: "Invalid link" });
+
+    await User.updateOne({ _id: user._id, verified: true });
+    await token.deleteOne();
+
+    res.status(200).send({ message: "Email verified Successfully!" });
+  } catch (err) {
+    res.status(400).send({ message: err.message });
   }
 });
 
@@ -93,7 +109,23 @@ exports.login = asyncHandler(async (req, res, next) => {
   }
 
   // check user active status
-  checkStatus(res, user.is_active);
+  // checkStatus(res, user.is_active);
+
+  if (!user.verified) {
+    let token = await Token.findOne({ user_id: user._id });
+    if (!token) {
+      const token = await new Token({
+        user_id: user._id,
+        token: crypto.randomBytes(32).toString("hex"),
+      }).save();
+
+      const url = `${process.env.BASE_URL}users/${user._id}/verify/${token.token}`;
+      await sendEmail(user.email, "Verify Email", url);
+    }
+    return res
+      .status(400)
+      .send({ message: "An email sent to your account please verify" });
+  }
 
   bcrypt.compare(password, user.password, (err, isMatch) => {
     if (isMatch) {

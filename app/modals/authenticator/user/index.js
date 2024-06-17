@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema(
     password: { type: String },
     country: { type: String },
     is_active: { type: Boolean, default: true },
+    verified: { type: Boolean, default: false },
     permissions: [{ type: mongoose.Schema.Types.ObjectId, ref: "permissions" }],
     games: [{ type: mongoose.Schema.Types.ObjectId, ref: "Games" }],
     active_games: [{ type: mongoose.Schema.Types.ObjectId, ref: "Games" }],

@@ -53,7 +53,7 @@ exports.register = asyncHandler(async (req, res, next) => {
         token: crypto.randomBytes(32).toString("hex"),
       }).save();
 
-      const url = `${process.env.BASE_URL}users/${user._id}/verify/${token.token}`;
+      const url = `${process.env.BASE_URL}verify/${user._id}/${token.token}`;
       await sendEmail(user.email, "Verify Email", url);
 
       res
@@ -67,6 +67,7 @@ exports.register = asyncHandler(async (req, res, next) => {
 
 // ^ verify user
 exports.verifyUser = asyncHandler(async (req, res, next) => {
+  console.log(req.url);
   try {
     const user = await User.findOne({ _id: req.params.id });
     if (!user) return res.status(400).json({ message: "Invalid link" });
@@ -78,7 +79,7 @@ exports.verifyUser = asyncHandler(async (req, res, next) => {
     if (!token) return res.status(400).json({ message: "Invalid link" });
 
     await User.updateOne({ _id: user._id, verified: true });
-    await token.deleteOne();
+    // await token.deleteOne();
 
     res.status(200).send({ message: "Email verified Successfully!" });
   } catch (err) {
@@ -119,7 +120,7 @@ exports.login = asyncHandler(async (req, res, next) => {
         token: crypto.randomBytes(32).toString("hex"),
       }).save();
 
-      const url = `${process.env.BASE_URL}users/${user._id}/verify/${token.token}`;
+      const url = `${process.env.BASE_URL}verify/${user._id}/${token.token}`;
       await sendEmail(user.email, "Verify Email", url);
     }
     return res
